@@ -51,6 +51,14 @@
   (not (vali/errors? :reason :exp_amt :exp_date)))
 
 
+;;Code for Add Remonder Form Validation
+(defn valid-reminder? [{:keys [reminder_for reminder_date]}]
+  (vali/rule (vali/has-value? reminder_for)
+             [:reminder_for "Reminder For Field Must Contain Value."])
+  (vali/rule (vali/has-value? reminder_date)
+             [:reminder_date "Reminder Date Is Required."]) 
+  (not (vali/errors? :reminder_for :reminder_date)))
+
 
 ;;Code For Partial To Handle Validation
 
@@ -496,14 +504,18 @@
     [:div.error error]
     [:h2 "Add Reminder"]
     (form-to [:post "/reminder"]
+      (vali/on-error :reminder_for error-item)
       (label "reminder_for" "Reminder For")
       (text-field "reminder_for")
       [:br]
+      (vali/on-error :reminder_date error-item)
       (label "reminder_date" "Reminder Date")
       (text-field {:id "reminder_date"} "reminder_date")
       [:br]
       (submit-button "Add Reminder")
       (reset-button "Cancel")
+      [:br]
+      (html (link-to "/homepage" "Back"))
     )
   )
 )
@@ -511,17 +523,20 @@
 ;;Reminder Handler Page
 
 (defpage [:post "/reminder"] reminder
-  (let
-       [getuser (db/get-user (session/get :user))]
-           (try
-             (db/add-reminder {:reminder_for (:reminder_for reminder) 
-                               :reminder_date (:reminder_date reminder)
-                               :user_id (:id getuser)})
-             (resp/redirect "/homepage")
-             (catch Exception ex
-               (println (.getMessage ex))
-               (render "/reminder" (assoc reminder :error (.getMessage ex)))
+ (if (valid-reminder? reminder)
+    (let
+         [getuser (db/get-user (session/get :user))]
+             (try
+               (db/add-reminder {:reminder_for (:reminder_for reminder) 
+                                 :reminder_date (:reminder_date reminder)
+                                 :user_id (:id getuser)})
+               (resp/redirect "/homepage")
+               (catch Exception ex
+                 (println (.getMessage ex))
+                 (render "/reminder" (assoc reminder :error (.getMessage ex)))
+               )
              )
-           )
-    )
+      )
+      (render "/reminder")
+  )
 )

@@ -40,7 +40,7 @@
                       (link-to "/logout" "Logout")
                       (link-to "/signup" "Signup")
                   )
-                   (getcurrentdate)
+                   ;(getcurrentdate)
                    content
                  ]
                 ]
