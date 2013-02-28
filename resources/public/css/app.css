@@ -4,3 +4,6 @@
 .fontcolor{
   color: red;
 }
+.rem_close{
+  cursor: pointer;
+ }

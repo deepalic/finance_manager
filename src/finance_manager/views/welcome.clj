@@ -184,13 +184,13 @@
                           from reminder where user_id=?" (:id getuser))]
         (for [gtrem getreminder]
           (if (= today_dt (:nicedate gtrem))
-          ;(if (.equals today_dt "2013-02-27")
-            [:table{:border="1"}
+            [:table{:border="1" :id "rem_table"}
               [:tr
                 [:th [:font {:color "red"}] "Your Reminder For"]
               ]
               [:tr
                 [:td [:font {:color "red"}] (:reminder_for gtrem)]
+                [:td.rem_close {:id "reminder_close"} "Close"]
               ]
             ]
           )

@@ -50,5 +50,9 @@
      $("#reminder_date").focusin(function () {
        $(this).datepicker({ altField: "#"+$(this).attr('id'),altFormat: "yy-mm-dd"})
      });
+
+     $("#reminder_close").click(function () {
+       $("#rem_table").hide(); 
+     });
   });
 
